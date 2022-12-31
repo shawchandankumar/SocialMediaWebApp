@@ -1,8 +1,15 @@
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const cookieParser = require('cookie-parser');
 const db = require('./config/mongoose');
+const { urlencoded } = require('express');
 const app = express();
 const port = 8000;
+
+// get the post req data in the req.body as json
+app.use(express.urlencoded());
+
+app.use(cookieParser());
 
 // include all the css js and images file
 app.use(express.static('./assets'));
