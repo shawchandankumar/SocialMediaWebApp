@@ -12,6 +12,11 @@ const db = require('./config/mongoose');
 const app = express();
 const port = 8000;
 
+const sassMiddleware = require('node-sass-middleware');
+
+
+
+
 // get the post req data in the req.body as json
 app.use(express.urlencoded());
 
@@ -61,6 +66,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
 
+app.use(sassMiddleware({
+    src: './assets/scss',
+    dest: './assets/css',
+    debug: true,
+    outputStyle: 'extended',
+    prefix: '/css'
+}));
 
 // use express router
 app.use('/', require('./routes'));
