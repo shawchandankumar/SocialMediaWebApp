@@ -15,12 +15,10 @@ const port = 8000;
 const sassMiddleware = require('node-sass-middleware');
 
 
-
-
 // get the post req data in the req.body as json
 app.use(express.urlencoded());
 
-app.use(cookieParser());
+// app.use(cookieParser());
 
 // include all the css js and images file
 app.use(express.static('./assets'));
