@@ -20,3 +20,28 @@ module.exports.create = function (req, res) {
         }
     });
 }
+
+
+module.exports.destroy = function (req, res) {
+    Comment.findById(req.params.id, function (err, comment) {
+        if (err) { console.log('Error in finding comment to be deleted ', err); return; }
+
+        if (req.user.id == comment.user) {
+
+            let postId = comment.id;
+
+            comment.remove();
+            
+            Post.findByIdAndUpdate(postId, {
+                $pull: {
+                    comments: req.params.id
+                }
+            }, function (err, post) {
+                if (err) { console.log('Error in updating post ', err); return; }
+                return res.redirect('back');
+            })
+        }
+        else res.redirect('back');
+        
+    });
+}
