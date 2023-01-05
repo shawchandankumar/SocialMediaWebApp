@@ -25,23 +25,32 @@ module.exports.create = function (req, res) {
 module.exports.destroy = function (req, res) {
     Comment.findById(req.params.id, function (err, comment) {
         if (err) { console.log('Error in finding comment to be deleted ', err); return; }
+        Post.findById(comment.post, function (err, post) {
+            if (req.user.id == comment.user || req.user.id == post.user) {
 
-        if (req.user.id == comment.user) {
+                let postId = comment.id;
 
-            let postId = comment.id;
+                // const postComments = post.comments;
+                // const index = postComments.indexOf(comment._id);
 
-            comment.remove();
-            
-            Post.findByIdAndUpdate(postId, {
-                $pull: {
-                    comments: req.params.id
-                }
-            }, function (err, post) {
-                if (err) { console.log('Error in updating post ', err); return; }
+                // post.comments.splice(index, 1);
+                // post.save();
+    
+                comment.remove();
+                
+                Post.findByIdAndUpdate(postId, {
+                    $pull: {
+                        comments: req.params.id
+                    }
+                }, function (err, post) {
+                    if (err) { console.log('Error in updating post ', err); return; }
+                    return res.redirect('back');
+                })
+
                 return res.redirect('back');
-            })
-        }
-        else res.redirect('back');
-        
+            }
+            else res.redirect('back');
+        })
+
     });
 }
