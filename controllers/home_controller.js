@@ -1,5 +1,5 @@
-const { populate } = require('../models/post');
 const Post = require('../models/post');
+const User = require('../models/user');
 
 module.exports.home = function (req, res) {
 
@@ -35,9 +35,14 @@ module.exports.home = function (req, res) {
     .exec((err, posts) => {
         if (err) { console.log('Error in retrieving posts ', err); return; }
 
-        return res.render('home', {
-            title: 'Codeial | Home', 
-            posts
+        User.find({}, function (err, users) {
+            if (err) { console.log('Error in getting all the users/ friends', err); return; }
+
+            return res.render('home', {
+                title: 'Codeial | Home', 
+                posts,
+                users
+            })
         })
     });
 
