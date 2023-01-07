@@ -51,6 +51,7 @@ module.exports.signIn = function (req, res) {
 // get the sign in data
 module.exports.create = function (req, res) {
     if (req.body.confirm_password !== req.body.password) {
+        // req.flash('error', 'confir')
         return res.redirect('back');
     }
 
@@ -75,16 +76,18 @@ module.exports.create = function (req, res) {
 
 // sign in and create a session for the user
 module.exports.createSession = function (req, res) {
+    req.flash('success', 'Successfully logged in');
     return res.redirect('/');
 }
 
 
-module.exports.destroySession = function (req, res, next) {
+module.exports.destroySession = function (req, res) {
     req.logout((err) => {
-        if (err) {console.log('Error in logging out', err); return next(err); }
+        if (err) {console.log('Error in logging out', err); return; }
+
+        req.flash('success', 'You have logged out!!');
+
         return res.redirect('/');
     })
-
-    return res.redirect('/');
 }
 

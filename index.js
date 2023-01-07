@@ -6,19 +6,23 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
+const passportJWT = require('./config/passport-jwt-strategy');
 const MongoStore = require('connect-mongodb-session')(session);
+const flash = require('connect-flash');
 
 const db = require('./config/mongoose');
 const app = express();
 const port = 8000;
 
 const sassMiddleware = require('node-sass-middleware');
+const { customMware } = require('./config/middleware');
+
 
 
 // get the post req data in the req.body as json
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 
-// app.use(cookieParser());
+app.use(cookieParser());
 
 // include all the css js and images file
 app.use(express.static('./assets'));
@@ -62,6 +66,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
+app.use(customMware);
 app.use(passport.setAuthenticatedUser);
 
 app.use(sassMiddleware({
