@@ -10,6 +10,7 @@ let createPost = function () {
             url: '/posts/create',
             data: newPostForm.serialize(),
             success: function (data) {
+                console.log(data);
                 let newPost = newPostDom(data.data.post);
                 $('#posts-list-container>ul').prepend(newPost);
                 deletePost($(' .delete-post-button', newPost));

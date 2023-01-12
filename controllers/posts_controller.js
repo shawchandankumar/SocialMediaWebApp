@@ -13,8 +13,9 @@ module.exports.create = async function (req, res) {
             content: req.body.content,
             user: req.user.id
         });
-        post.populate('user');
 
+        await post.populate([{path: 'user', select: 'name'}]);
+        
         if (req.xhr) {
             return res.status(200).json({
                 data: {
