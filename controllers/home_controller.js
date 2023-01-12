@@ -25,6 +25,7 @@ module.exports.home = async function (req, res) {
 
     try {
         let posts = await Post.find({})
+        .sort('-createdAt')
         .populate('user')
         // populating all the comments in the posts according to the comment id 
         // in the array and inside all the comment populating the user of the comment 
