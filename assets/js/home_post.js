@@ -10,10 +10,13 @@ let createPost = function () {
             url: '/posts/create',
             data: newPostForm.serialize(),
             success: function (data) {
-                console.log(data);
                 let newPost = newPostDom(data.data.post);
                 $('#posts-list-container>ul').prepend(newPost);
                 deletePost($(' .delete-post-button', newPost));
+
+                // For every new post created by ajax 
+                // create every comment of this post by ajax
+                createComment($(' .new-comment-form', newPost));
             },
             error: function (error) {
                 console.log('error ', error.responseText);
@@ -36,7 +39,7 @@ let newPostDom = function (post) {
                 <br>
                 <div class="post-comments">
                     
-                    <form action="/comments/create" method="post">
+                    <form class="new-comment-form" action="/comments/create" method="post">
                         <input type="text" name="content" placeholder="Type here to add comment...">
                         <input type="hidden" name="post" value=${post._id}>
                         <input type="submit" value="Add Comment">
@@ -50,7 +53,8 @@ let newPostDom = function (post) {
                     
                 </div>
             </p>
-        </li>`);
+        </li>`
+    );
 }
 
 
@@ -75,6 +79,24 @@ let deletePost = function(deleteLink) {
 }
 
 
+let attachDeleteListenerToPostsComment = function(post) {
+
+    $(' .delete-comment-button', post).each(function() {
+        deleteComment($(this));
+    });
+}
+
+
 createPost();
+
+// for the first time when the window loads loop over all the 
+// posts and all the comments of every post to attach a click listener 
+// for delete when clicked on the cross button
+$('#posts-list-container>ul>li').each(function() {
+    let curPost = $(this);
+    deletePost($(' .delete-post-button', curPost));
+    createComment($(' .new-comment-form', curPost));
+    attachDeleteListenerToPostsComment(curPost);
+});
 
 

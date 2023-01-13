@@ -14,6 +14,18 @@ module.exports.create = async function (req, res) {
 
             post.comments.push(comment);
             post.save();
+
+            await comment.populate([{path: 'user', select: 'name'}])
+
+            if (req.xhr) {
+                return res.status(200).json({
+                    data: {
+                        comment
+                    },
+                    message: 'Comment created!'
+                })
+            }
+
             return res.redirect('back');
         }
 
@@ -32,7 +44,7 @@ module.exports.destroy = async function (req, res) {
         
         if (req.user.id == comment.user || req.user.id == post.user) {
 
-            let postId = comment.id;
+            let postId = comment.post;
 
             // const postComments = post.comments;
             // const index = postComments.indexOf(comment._id);
@@ -42,11 +54,21 @@ module.exports.destroy = async function (req, res) {
 
             comment.remove();
             
+            // deleting all the comment of this post
             let post = await Post.findByIdAndUpdate(postId, {
                 $pull: {
                     comments: req.params.id
                 }
             });
+
+            if (req.xhr) {
+                return res.status(200).json({
+                    data: {
+                        comment_id: req.params.id
+                    },
+                    message: 'Comment deleted'
+                })
+            }
 
             return res.redirect('back');
         }
