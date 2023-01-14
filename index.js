@@ -7,6 +7,7 @@ const session = require('express-session');
 const passport = require('passport');
 const passportLocal = require('./config/passport-local-strategy');
 const passportJWT = require('./config/passport-jwt-strategy');
+const passportGoogle = require('./config/passport-google-oauth2-strategy');
 const MongoStore = require('connect-mongodb-session')(session);
 const flash = require('connect-flash');
 
@@ -20,7 +21,7 @@ const { customMware } = require('./config/middleware');
 
 
 // get the post req data in the req.body as json
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded());
 
 app.use(cookieParser());
 
