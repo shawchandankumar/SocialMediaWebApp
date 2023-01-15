@@ -3,11 +3,14 @@
     Codeial / User profile Page
 </h1>
 
+<img src="<%= user.avatar %>" alt="<%= user.name %>" style="width: 10vw; height: 50px">
+
 <% if (locals.user.id == user_profile.id) { %>
 
-    <form action="/users/update/<%= user_profile.id %>" method="post">
+    <form action="/users/update/<%= user_profile.id %>" enctype="multipart/form-data" method="post">
         <input type="text" name="name" placeholder="Enter Name..." value="<%= user_profile.name %>" required>
         <input type="email" name="email" placeholder="Enter Email..." value="<%= user_profile.email %>" required>
+        <input type="file" name="avatar" placeholder="Profile Picture">
         <input type="submit" value="Update">
     </form>
 

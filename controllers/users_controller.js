@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const fs = require('fs');
+const path = require('path');
 
 module.exports.profile = function (req, res) {
 
@@ -13,16 +15,42 @@ module.exports.profile = function (req, res) {
 }
 
 
-module.exports.update = function (req, res) {
-    if (req.user.id == req.params.id) {
-        User.findByIdAndUpdate(req.params.id, req.body, function (err, user) {
-            if (err) { console.log('Error in updating the user information ', err); return; }
+module.exports.update = async function (req, res) {
 
+    if (req.user.id == req.params.id) {
+
+        try {
+            
+            let user = await User.findById(req.params.id);
+
+            User.uploadedAvatar(req, res, function(err) {
+                user.name = req.body.name;
+                user.email = req.body.email;
+
+                if (req.file) { 
+
+                    // if there is already some avatar for this user then remove it and add new one
+                    if (user.avatar) {
+                        fs.unlinkSync(path.join(__dirname, '..', user.avatar));
+                    }
+
+                    // this is saving the path of the uploaded file into the avatar field in the user
+                    user.avatar = User.avatarPath + '/' + req.file.filename;
+                }
+
+                user.save();
+                return res.redirect('back');
+            })
+
+        } catch (err) {
+            console.log('*********Error ', err);
             return res.redirect('back');
-        });
+        }
+
     } else {
         return res.status(401).send('UnAuthorized');
     }
+
 }
 
 module.exports.signUp = function (req, res) {

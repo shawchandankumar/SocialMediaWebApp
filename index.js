@@ -19,14 +19,15 @@ const sassMiddleware = require('node-sass-middleware');
 const { customMware } = require('./config/middleware');
 
 
-
 // get the post req data in the req.body as json
 app.use(express.urlencoded());
 
 app.use(cookieParser());
 
 // include all the css js and images file
-app.use(express.static('./assets'));
+app.use(express.static('assets'));
+
+app.use('/uploads', express.static('uploads'));
 
 // use express layouts before router
 app.use(expressLayouts);
@@ -90,3 +91,4 @@ app.listen(port, function (err) {
 
     console.log(`Server is up and running on port ${port}`);
 })
+
